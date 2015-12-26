@@ -5,17 +5,20 @@
 #include <dirent.h>
 #include "get_dir.h"
 
-int make_response(const char *data, const unsigned long size, char *response, const char *content_type) {	
+int make_response(const char *data, unsigned long *size, char *response, const char *content_type) {	
 	printf("%s\n\n", data);
 	sprintf(response, "HTTP/1.1 200 OK\r\n"
 	"Content-Type: %s\r\n"
 	"Content-Length: %u\r\n"
 	"Accept-Range: bytes\r\n"
 	//"Connexion: close"
-	"\r\n", content_type, size);
+	"\r\n", content_type, *size);
 	int i;
 	for(i = 0 ; response[i] != '\0' ; i++);
-	memcpy(response+i, data, size);
+	memcpy(response+i, data, *size);
+	
+	// Now, increase the size with the header size
+	*size += i;
 	return 0;
 }
 

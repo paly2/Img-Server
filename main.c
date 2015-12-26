@@ -19,6 +19,7 @@ typedef struct sockaddr SOCKADDR;
 static SOCKET sock, csock;
 
 void close_sock() {
+	printf("Quit\n");
 	shutdown(csock, 2);
 	close(sock);
 	close(csock);
@@ -26,9 +27,10 @@ void close_sock() {
 
 void send_data(const char *data, const unsigned long size, const char *content_type) {
 	char send_buff[500+size];
-	if(make_response(data, size, send_buff, content_type) == 0) {
+	unsigned long new_size = size;
+	if(make_response(data, &new_size, send_buff, content_type) == 0) {
 		printf("Send buff : %s", send_buff);
-		if(send(csock, send_buff, size+strlen(send_buff), 0) == SOCKET_ERROR)
+		if(send(csock, send_buff, new_size, 0) == SOCKET_ERROR)
 			printf("Sending error\n");
 	}
 }
