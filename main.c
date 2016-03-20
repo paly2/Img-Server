@@ -68,39 +68,53 @@ int main() {
 		return EXIT_FAILURE;
 	}
 	
-	while(1) {
-		csock = accept(sock, (SOCKADDR*)&csin, &crecsize);
-		printf("Connexion from %s with socket %d\n", inet_ntoa(csin.sin_addr), csock);
-
-			char recv_buff[500] = "";
 	
-			if(recv(csock, recv_buff, 500, 0) == SOCKET_ERROR)
-				printf("Reception error\n");
+	
+waiting_for_client:
+	csock = accept(sock, (SOCKADDR*)&csin, &crecsize);
+	printf("Connexion from %s with socket %d\n", inet_ntoa(csin.sin_addr), csock);
+	
+	while(1) {
+		char recv_buff[500] = "";
 		
-			printf("Received : \n%s\n", recv_buff);
+		int r = 0;
+		if((r = recv(csock, recv_buff, 500, 0)) == SOCKET_ERROR) {
+			printf("Reception error\n");
+			continue;
+		}
+		else if(r == 0) {
+			printf("Client quit\n");
+			shutdown(csock, 2);
+			close(csock);
+			goto waiting_for_client;
+		}
 		
-			strtok(recv_buff, " ");
+		if(strnlen(recv_buff, 500) == 500) { // To avoid some segment errors
+			printf("Reception error\n");
+			continue;
+		}
+		printf("Received : \n%s\n", recv_buff);
+	
+		strtok(recv_buff, " ");
 		
-			char *directory = strtok(NULL, " ");
-			if(directory[strlen(directory)-1] == '/') directory[strlen(directory)-1] = '\0'; // There will be problems if we don't remove the last /.
-			printf("File or directory requested: %s\n", directory);
-			
-			// Get data to send
-			char *data = NULL;
-			char content_type[200] = "";
-			unsigned long size = 0;
-			
-			if(strstr(directory, "/."))
-				get_unauthorized(&data, &size, content_type);
-			else if(get_dir(directory, &data, &size, content_type) == 1) {
-				if(get_file(directory, &data, &size, content_type) == 1)
-					get_404(&data, &size, content_type);
-			}
-			send_data(data, size, content_type);
-			free(data);
+		char *directory = strtok(NULL, " ");
 		
-		shutdown(csock, 2);
-		close(csock);
+		if(directory[strlen(directory)-1] == '/') directory[strlen(directory)-1] = '\0'; // There will be problems if we don't remove the last /.
+		printf("File or directory requested: %s\n", directory);
+		
+		// Get data to send
+		char *data = NULL;
+		char content_type[200] = "";
+		unsigned long size = 0;
+		
+		if(strstr(directory, "/."))
+			get_unauthorized(&data, &size, content_type);
+		else if(get_dir(directory, &data, &size, content_type) == 1) {
+			if(get_file(directory, &data, &size, content_type) == 1)
+				get_404(&data, &size, content_type);
+		}
+		send_data(data, size, content_type);
+		free(data);
 	}
 		
 	return EXIT_SUCCESS;
