@@ -126,9 +126,12 @@ int get_file(char *path, char **data, unsigned long *size, char *content_type) {
 	return 0;
 }
 
-void get_404(char **data, unsigned long *size, char *content_type) {
+void get_404(char **data, unsigned long *size, char *content_type, const char* directory) {
 	FILE *missingfile = NULL;
-	missingfile = fopen("404.html","r");
+	char filename[500] = ""; strcpy(filename, directory);
+	*(strrchr(filename, '/')+1) = '\0'; strcat(filename, "404.html");
+	printf("Filename: %s\n", filename);
+	missingfile = fopen(filename,"r");
 	*data = malloc(DATA_MAX_SIZE*sizeof(char));
 	
 	int c;
@@ -142,9 +145,11 @@ void get_404(char **data, unsigned long *size, char *content_type) {
 	*size = n;
 }
 
-void get_unauthorized(char **data, unsigned long *size, char *content_type) {
+void get_unauthorized(char **data, unsigned long *size, char *content_type, const char* directory) {
 	FILE *file = NULL;
-	file = fopen("unauthorized.html","r");
+	char filename[500] = ""; strcpy(filename, directory);
+	*(strrchr(filename, '/')+1) = '\0'; strcat(filename, "unauthorized.html");
+	file = fopen(filename,"r");
 	*data = malloc(DATA_MAX_SIZE*sizeof(char));
 	
 	int c;

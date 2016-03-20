@@ -35,7 +35,7 @@ void send_data(const char *data, const unsigned long size, const char *content_t
 	}
 }
  
-int main() {
+int main(int argc, char* argv[]) {
 	atexit(close_sock);
 	
 	SOCKADDR_IN sin;
@@ -108,10 +108,10 @@ waiting_for_client:
 		unsigned long size = 0;
 		
 		if(strstr(directory, "/."))
-			get_unauthorized(&data, &size, content_type);
+			get_unauthorized(&data, &size, content_type, argv[0]);
 		else if(get_dir(directory, &data, &size, content_type) == 1) {
 			if(get_file(directory, &data, &size, content_type) == 1)
-				get_404(&data, &size, content_type);
+				get_404(&data, &size, content_type, argv[0]);
 		}
 		send_data(data, size, content_type);
 		free(data);
