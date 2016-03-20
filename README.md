@@ -13,7 +13,13 @@ By default, the server works with the port 776. For example, if the server is ru
 
 ### How to compile it ?
 
-Write these commands in a console :  
+Before all, you must tell to the program the `images` directory emplacement. Please change the value of the `IMG_DIRECTORY` define at the top of the `get_dir.h` file.  
+Then, if you want to run the program as a daemon, you also have to write its emplacement in the `img-server.sh` script (the `DAEMON` line).
+
+Execute the `install.sh` script after cloning the repository:  
 `git clone https://github.com/paly2/Img-Server`  
-`gcc *.c -o 'img-server'`  
-`sudo ./img-server`
+`cd Img-Server`  
+`sudo ./install.sh`
+
+Then you have to run the daemon:  
+`sudo /etc/init.d/img-server start`
