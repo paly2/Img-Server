@@ -6,7 +6,7 @@
 #include "get_dir.h"
 
 int make_response(const char *data, unsigned long *size, char *response, const char *content_type) {	
-	printf("%s\n\n", data);
+	//printf("%s\n\n", data);
 	sprintf(response, "HTTP/1.1 200 OK\r\n"
 	"Content-Type: %s\r\n"
 	"Content-Length: %u\r\n"
@@ -162,3 +162,4 @@ void get_unauthorized(char **data, unsigned long *size, char *content_type, cons
 	strcpy(content_type, "text/html");
 	*size = n;
 }
+

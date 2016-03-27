@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Authentication needed</title>
+		
+		<script type="text/javascript" src="/Blowfish.js"></script>
+		<script type="text/javascript" src="http://yandex.st/jquery/1.4.2/jquery.min.js"></script>
+	</head>
+	<body>
+		<h1>Welcome to ImgServer</h1>
+		<p>An authentication is needed.</p>
+		
+		<form>
+			<input type="text" name="blowfish_key" size="56" /><br/>
+			<input type="submit" name="encrypt" value="Submit">
+		</form>
+		
+		<script type="text/javascript">
+			$(function() {
+				$('input[name=encrypt]').click(function(event) {
+					try {
+						var key = $('input[name=blowfish_key]').val();
+						
+						// The next line is automatically fill by ImgServer with the password variable. There are spaces at the end of the line to avoid overwriting.
+var password = "";                                                                                               
+						var bf = new Blowfish(key);
+						var res = bf.encrypt(password);
+						res = bf.base64Encode(res);
+						location.replace(res);
+					} catch(ex) {
+						if (window.console && console.log) {
+							console.log(ex)
+						}
+					}
+
+					return false;
+				});
+			});
+		</script>
+		<p>Img Server - Writted by <a href="mailto:plangrognet@laposte.net">paly2</a> (Pierre-Adrien Langrognet). This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License.</p>
+	</body>
+</html>
