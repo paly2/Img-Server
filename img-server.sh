@@ -16,7 +16,7 @@ fi
 # Author: paly2 <plangrognet@laposte.net>
 
 DESC="Img Server"
-DAEMON="/home/administrateur/public-imgserver/img-server"
+DAEMON="/home/administrateur/public-imgserver/run.sh"
 daemon_OPT=""
 DAEMONUSER="root"
 daemon_NAME="img-server"
